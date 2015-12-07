@@ -22,11 +22,16 @@ cube.xarr.convert_to_unit('km/s')
 xmax=9; ymax=9
 vmin=5.0; vmax=8.0
 
-rms_map = cube.slice(-0.2, 6.6, unit='km/s').cube.std(axis=0)
+
+# This line is wrong, because it is calculating the rms over the channels with emission
+#rms_map = cube.slice(-0.2, 6.6, unit='km/s').cube.std(axis=0) 
+rms_map = cube.slice(15.0, 25.0, unit='km/s').cube.std(axis=0) # 
 peaksnr =  cube.slice(vmin, vmax, unit='km/s').cube.max(axis=0)/rms_map
 planemask = (peaksnr>snr_min) 
 planemask = remove_small_objects(planemask,min_size=40)
 planemask = opening(planemask,disk(1))
+
+print("calculated rms used at position of maximum is {0} K, and it should be 0.042 K".format(rms_map[ymax,ymax]))
 
 F=False
 T=True
